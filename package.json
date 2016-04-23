@@ -4,7 +4,7 @@
   "description": "Basic pub/sub/emitter class for React apps, inspired by Flux",
   "main": "emitter.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js && eslint *.js && echo 'Tests passed, eslint passed'"
   },
   "repository": {
     "type": "git",
