@@ -2,6 +2,8 @@
 'use strict';
 
 var each = require('lodash/forEach');
+var defaults = require('lodash/defaults');
+
 function Emitter() {
     this._listeners = {};
     this._onQueue = [];
@@ -21,6 +23,8 @@ Emitter.prototype = {
         } else {
             this._onQueue.push(listener);
         }
+
+        return this;
     },
 
     off: function off(ctx) {
@@ -38,12 +42,14 @@ Emitter.prototype = {
         } else {
             this._offQueue.push(ctx);
         }
+
+        return this;
     },
 
     trigger: function trigger(ev) {
         if (this._triggering) {
             this._triggerStack.unshift(ev);
-            return;
+            return this;
         }
 
         this._triggering = true;
@@ -59,6 +65,20 @@ Emitter.prototype = {
 
         this._triggering = false;
         this._processQueue();
+
+        return this;
+    },
+
+    factory: function factory(evProps) {
+        var that = this;
+        var triggerer = function triggerer(ev) {
+            return that.trigger(defaults({}, evProps, ev));
+        };
+        triggerer.trigger = triggerer;
+        triggerer.factory = function triggererFactory(subEvProps) {
+            return that.factory(defaults({}, evProps, subEvProps));
+        };
+        return triggerer;
     },
 
     _processQueue: function _processQueue() {

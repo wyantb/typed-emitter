@@ -43,4 +43,32 @@ em.on(callCtx, 'event', function evCb() {
 });
 em.trigger('event');
 
+// --- has a 'trigger factory' allowing one to set default triggers
+em = new Emitter();
+wasCalled = false;
+em.on(callCtx, 'event', function cb(ev) {
+    wasCalled = true;
+    assert(ev.defaulted, 'had defaulted prop');
+});
+assert(!wasCalled, 'was called just by calling on?  wrong');
+var defaultedEmitter = em.factory({
+    defaulted: true,
+});
+defaultedEmitter({ type: 'event' });
+assert(wasCalled, 'was called after invoking defaultedEmitter');
+wasCalled = false;
+var fullyDefaultedEmitter = defaultedEmitter.factory({
+    type: 'event',
+});
+var fullyDefaultedCall = false;
+em.on(callCtx, 'event', function cb(ev) {
+    fullyDefaultedCall = true;
+    assert(ev.fullyDefaulted, 'prop from fullyDefaulted trigger was present');
+});
+fullyDefaultedEmitter.trigger({
+    fullyDefaulted: true,
+});
+assert(wasCalled, 'first listener was called');
+assert(fullyDefaultedCall, 'second listener was called');
+
 console.log('All tests passed - you\'re good to go');
