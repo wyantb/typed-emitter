@@ -1,6 +1,6 @@
 {
   "name": "typed-emitter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Basic pub/sub/emitter class for React apps, inspired by Flux",
   "main": "emitter.js",
   "scripts": {
