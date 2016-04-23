@@ -1,7 +1,7 @@
 /* eslint no-console: 0 */
 'use strict';
 
-const Emitter = require('./emitter.js');
+var Emitter = require('./emitter.js');
 
 function assert(bool, msg) {
     if (!bool) {
@@ -10,11 +10,11 @@ function assert(bool, msg) {
 }
 
 assert(Emitter, 'a module is exported');
-let em = new Emitter();
+var em = new Emitter();
 
 // --- Basic tests: on/off/trigger methods
-const callCtx = {};
-let wasCalled = false;
+var callCtx = {};
+var wasCalled = false;
 em.on(callCtx, 'event', function cb() {
     assert(this === callCtx, 'emitter didnt use given ctx');
     wasCalled = true;
@@ -37,7 +37,7 @@ try {
 // --- trigger calls are put onto stack until all listeners are triggered
 // (in this test, if wasn't the case, you'd see inf loop)
 em = new Emitter();
-em.on(callCtx, 'event', () => {
+em.on(callCtx, 'event', function evCb() {
     em.trigger({ type: 'event' });
     em.off(callCtx);
 });
